@@ -70,7 +70,8 @@ require("lazy").setup({
 			require("plugins.config.treesitter")
 		end,
 		build = ":TSUpdate",
-		dependencies = { "HiPhish/rainbow-delimiters.nvim" },
+		-- rainbow-delimiters disabled: crashes on nvim 0.12 nightly (nil parser bug)
+		-- dependencies = { "HiPhish/rainbow-delimiters.nvim" },
 	},
 
 	{

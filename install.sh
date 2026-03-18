@@ -92,7 +92,7 @@ for p in \
   ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk \
   gnome-themes-extra gtk4 nwg-look papirus-icon-theme \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  tmux neovim zsh fzf starship ripgrep fd tree-sitter-cli gcc cmake make \
+  tmux zsh fzf starship ripgrep fd tree-sitter-cli gcc cmake make \
   swaylock slurp python eza bat mesa firefox imv thermald; do
   pacman_install "$p" || warn "skip: $p"
 done
@@ -111,6 +111,7 @@ set -e
 echo ""
 echo "→ AUR"
 paru_install ghostty
+paru_install neovim-nightly-bin
 paru_install wl-screenrec 2>/dev/null || warn "wl-screenrec AUR optional (Super+y record)"
 
 if pacman -Qi tmux-plugin-manager &>/dev/null; then
@@ -218,7 +219,7 @@ echo "  2. sudo reboot            → SDDM → Hyprland"
 echo "  3. tmux: Ctrl+Space then I (TPM) — panes use zsh"
 echo "  4. Firefox: Super+B       |  Claude Code: bash install.sh --claude-code"
 echo ""
-echo "  Neovim ≥ 0.11 | docs/system-optimization.md"
+echo "  Neovim nightly (0.12+) | docs/system-optimization.md"
 if [[ $PROFILE_PERFORMANCE -eq 1 ]]; then
   echo "  Profile: performance — re-run without flag to restore low-power tuning."
 else

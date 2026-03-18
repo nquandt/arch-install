@@ -1,6 +1,6 @@
 -- Get Git path of current file
 local filename_custom = require("lualine.custom_component.filename")
-local custom_catppuccin = require("lualine.themes.catppuccin")
+local custom_catppuccin = require("lualine.themes.catppuccin-mocha")
 
 custom_catppuccin.insert.b.fg = "#a6e3a1"
 custom_catppuccin.normal.c.fg = "#9399b2"
