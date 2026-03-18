@@ -9,14 +9,11 @@ echo "  nquandt dotfiles installer"
 echo "  source: $DOTFILES"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# ── Helpers ───────────────────────────────────────────────
-
 ok()   { echo "  [ok]     $1"; }
 info() { echo "  [...]    $1"; }
 warn() { echo "  [warn]   $1"; }
 fail() { echo "  [fail]   $1"; exit 1; }
-
-has() { command -v "$1" &>/dev/null; }
+has()  { command -v "$1" &>/dev/null; }
 
 pacman_install() {
   local pkg="$1"
@@ -43,34 +40,23 @@ paru_install() {
 link() {
   local src="$1"
   local dest="$2"
-  local dir
-  dir="$(dirname "$dest")"
-
-  mkdir -p "$dir"
-
+  mkdir -p "$(dirname "$dest")"
   if [ -e "$dest" ] && [ ! -L "$dest" ]; then
     warn "backing up $dest -> $dest.bak"
     mv "$dest" "$dest.bak"
   fi
-
-  if [ -L "$dest" ]; then
-    rm "$dest"
-  fi
-
+  [ -L "$dest" ] && rm "$dest"
   ln -s "$src" "$dest"
   ok "linked $dest"
 }
 
 # ── Preflight ─────────────────────────────────────────────
-
 echo ""
 echo "→ Checking prerequisites..."
-
 has git  || fail "git not found — install with: sudo pacman -S git"
 has paru || fail "paru not found — install AUR helper first (see setup guide)"
 
 # ── Packages ──────────────────────────────────────────────
-
 echo ""
 echo "→ Installing pacman packages..."
 
@@ -81,6 +67,7 @@ pacman_install sddm
 pacman_install tmux
 pacman_install neovim
 pacman_install wl-clipboard
+pacman_install cliphist
 pacman_install xdg-desktop-portal-hyprland
 pacman_install xdg-utils
 pacman_install qt5-wayland
@@ -102,49 +89,58 @@ pacman_install ripgrep
 pacman_install fd
 pacman_install tree-sitter-cli
 pacman_install gcc
+pacman_install cmake
 pacman_install luarocks
+pacman_install hyprshot
 
 echo ""
 echo "→ Installing AUR packages..."
-
 paru_install ghostty
 paru_install tmux-plugin-manager
 
 # ── TPM ───────────────────────────────────────────────────
-
 echo ""
 echo "→ Setting up TPM..."
-
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
   if [ -d "/usr/share/tmux-plugin-manager" ]; then
     mkdir -p "$HOME/.tmux/plugins"
     ln -s /usr/share/tmux-plugin-manager "$HOME/.tmux/plugins/tpm"
     ok "TPM linked from /usr/share/tmux-plugin-manager"
   else
-    warn "tmux-plugin-manager not found in /usr/share, cloning from GitHub..."
+    warn "tmux-plugin-manager not in /usr/share, cloning from GitHub..."
     mkdir -p "$HOME/.tmux/plugins"
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
     ok "TPM cloned from GitHub"
   fi
 else
-  ok "TPM already present at ~/.tmux/plugins/tpm"
+  ok "TPM already present"
 fi
 
 # ── Symlinks ──────────────────────────────────────────────
-
 echo ""
 echo "→ Linking configs..."
 
-link "$DOTFILES/hypr/hyprland.conf"  "$HOME/.config/hypr/hyprland.conf"
-link "$DOTFILES/waybar/config"       "$HOME/.config/waybar/config"
-link "$DOTFILES/waybar/style.css"    "$HOME/.config/waybar/style.css"
-link "$DOTFILES/wofi/style.css"      "$HOME/.config/wofi/style.css"
-link "$DOTFILES/ghostty/config"      "$HOME/.config/ghostty/config"
-link "$DOTFILES/tmux/tmux.conf"      "$HOME/.config/tmux/tmux.conf"
-link "$DOTFILES/nvim/init.lua"       "$HOME/.config/nvim/init.lua"
+# Hyprland
+link "$DOTFILES/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf"
+
+# Waybar
+link "$DOTFILES/waybar/config"    "$HOME/.config/waybar/config"
+link "$DOTFILES/waybar/style.css" "$HOME/.config/waybar/style.css"
+
+# wofi
+link "$DOTFILES/wofi/style.css" "$HOME/.config/wofi/style.css"
+
+# Ghostty
+link "$DOTFILES/ghostty/config" "$HOME/.config/ghostty/config"
+link "$DOTFILES/ghostty/themes" "$HOME/.config/ghostty/themes"
+
+# tmux
+link "$DOTFILES/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+
+# Neovim — link the whole nvim dir (handles split lua structure)
+link "$DOTFILES/nvim" "$HOME/.config/nvim"
 
 # ── Services ──────────────────────────────────────────────
-
 echo ""
 echo "→ Enabling services..."
 
@@ -155,7 +151,7 @@ else
   ok "sddm already enabled"
 fi
 
-if ! systemctl --user is-enabled pipewire &>/dev/null; then
+if ! systemctl --user is-enabled pipewire &>/dev/null 2>&1; then
   systemctl --user enable --now pipewire pipewire-pulse wireplumber
   ok "pipewire enabled"
 else
@@ -163,36 +159,34 @@ else
 fi
 
 # ── Validation ────────────────────────────────────────────
-
 echo ""
 echo "→ Validating..."
 
 errors=0
 
-validate_link() {
-  if [ -L "$1" ] && [ -e "$1" ]; then
+validate() {
+  if [ -e "$1" ]; then
     ok "$1"
   else
-    warn "missing symlink: $1"
+    warn "missing: $1"
     errors=$((errors + 1))
   fi
 }
 
-validate_link "$HOME/.config/hypr/hyprland.conf"
-validate_link "$HOME/.config/waybar/config"
-validate_link "$HOME/.config/waybar/style.css"
-validate_link "$HOME/.config/wofi/style.css"
-validate_link "$HOME/.config/ghostty/config"
-validate_link "$HOME/.config/tmux/tmux.conf"
-validate_link "$HOME/.config/nvim/init.lua"
+validate "$HOME/.config/hypr/hyprland.conf"
+validate "$HOME/.config/waybar/config"
+validate "$HOME/.config/waybar/style.css"
+validate "$HOME/.config/wofi/style.css"
+validate "$HOME/.config/ghostty/config"
+validate "$HOME/.config/ghostty/themes/catppuccin-mocha"
+validate "$HOME/.config/tmux/tmux.conf"
+validate "$HOME/.config/nvim/init.lua"
+validate "$HOME/.tmux/plugins/tpm"
 
-[ -d "$HOME/.tmux/plugins/tpm" ] && ok "~/.tmux/plugins/tpm" || { warn "TPM not found"; errors=$((errors + 1)); }
-
+echo ""
 if [ $errors -gt 0 ]; then
-  echo ""
   warn "$errors validation error(s) — review warnings above"
 else
-  echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "  All done! Next steps:"
   echo ""

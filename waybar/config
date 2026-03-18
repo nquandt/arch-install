@@ -1,22 +1,69 @@
-{
-  "layer": "top",
-  "position": "top",
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["clock"],
-  "modules-right": ["pulseaudio", "network", "battery", "tray"],
+[
+  {
+    "layer": "bottom",
+    "position": "top",
+    "height": 43,
+    "spacing": 0,
+    "reload_style_on_change": true,
 
-  "clock": {
-    "format": "{:%a %b %d  %H:%M}"
-  },
-  "network": {
-    "format-wifi": "  {essid}",
-    "format-disconnected": "disconnected"
-  },
-  "pulseaudio": {
-    "format": " {volume}%"
-  },
-  "battery": {
-    "format": "{capacity}% {icon}",
-    "format-icons": ["", "", "", "", ""]
+    "modules-left": [
+      "hyprland/workspaces",
+      "hyprland/window"
+    ],
+    "modules-center": [
+      "clock"
+    ],
+    "modules-right": [
+      "pulseaudio",
+      "network",
+      "battery",
+      "tray"
+    ],
+
+    "hyprland/workspaces": {
+      "format": "{id}",
+      "on-scroll-up": "hyprctl dispatch workspace e-1",
+      "on-scroll-down": "hyprctl dispatch workspace e+1"
+    },
+
+    "hyprland/window": {
+      "max-length": 60,
+      "separate-outputs": true
+    },
+
+    "clock": {
+      "format": " {:%a %b %d  %H:%M}",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+
+    "network": {
+      "format-wifi": "  {essid}",
+      "format-ethernet": "  {ifname}",
+      "format-disconnected": "  disconnected",
+      "tooltip-format": "{ipaddr}/{cidr}"
+    },
+
+    "pulseaudio": {
+      "format": "{icon} {volume}%",
+      "format-muted": "  muted",
+      "format-icons": {
+        "default": ["", "", ""]
+      },
+      "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "battery": {
+      "format": "{icon} {capacity}%",
+      "format-charging": " {capacity}%",
+      "format-icons": ["", "", "", "", ""],
+      "states": {
+        "warning": 30,
+        "critical": 15
+      }
+    },
+
+    "tray": {
+      "spacing": 8
+    }
   }
-}
+]
