@@ -86,6 +86,7 @@ echo "→ core packages (Hyprland, audio, term, editors)"
 set +e
 for p in \
   hyprland waybar wofi sddm dunst pamixer wob pacman-contrib \
+  swww \
   wl-clipboard cliphist hyprshot \
   xdg-desktop-portal-hyprland xdg-utils \
   qt5-wayland qt6-wayland polkit-kde-agent \
@@ -93,7 +94,8 @@ for p in \
   gnome-themes-extra gtk4 nwg-look papirus-icon-theme \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   tmux zsh fzf starship ripgrep fd tree-sitter-cli gcc cmake make \
-  swaylock slurp python eza bat mesa firefox imv thermald; do
+  swaylock slurp python eza bat mesa firefox imv thermald \
+  dotnet-sdk; do
   pacman_install "$p" || warn "skip: $p"
 done
 if [[ $PROFILE_PERFORMANCE -eq 1 ]]; then
@@ -113,6 +115,29 @@ echo "→ AUR"
 paru_install ghostty
 paru_install neovim-nightly-bin
 paru_install wl-screenrec 2>/dev/null || warn "wl-screenrec AUR optional (Super+y record)"
+
+echo ""
+echo "→ dotnet telemetry opt-out"
+if grep -q "DOTNET_CLI_TELEMETRY_OPTOUT" /etc/environment 2>/dev/null; then
+  ok "DOTNET_CLI_TELEMETRY_OPTOUT already set"
+else
+  echo "DOTNET_CLI_TELEMETRY_OPTOUT=1" | sudo tee -a /etc/environment > /dev/null
+  ok "DOTNET_CLI_TELEMETRY_OPTOUT=1 → /etc/environment"
+fi
+
+echo ""
+echo "→ dotnet global tools (csharp-ls, csharpier)"
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+if has csharp-ls; then
+  ok "csharp-ls"
+else
+  dotnet tool install --global csharp-ls 2>/dev/null && ok "csharp-ls" || warn "csharp-ls install failed"
+fi
+if has csharpier; then
+  ok "csharpier"
+else
+  dotnet tool install --global csharpier 2>/dev/null && ok "csharpier" || warn "csharpier install failed"
+fi
 
 if pacman -Qi tmux-plugin-manager &>/dev/null; then
   ok "tmux-plugin-manager"
@@ -211,6 +236,10 @@ if [[ "$INSTALL_CLAUDE_CODE" == "1" ]]; then
 fi
 
 echo ""
+if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+  hyprctl reload && ok "hyprctl reload" || warn "hyprctl reload failed"
+fi
+
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Done."
 echo ""

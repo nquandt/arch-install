@@ -22,11 +22,10 @@ typeset -U path PATH
 path=(
   ~/.local/bin
   ~/.cargo/bin
+  ~/.npm-global/bin
+  ~/.dotnet/tools
   "${path[@]}"
 )
-
-# npm global (Claude Code / others)
-[[ -d ~/.npm-global/bin ]] && path=(~/.npm-global/bin "${path[@]}")
 
 # ── aliases ─────────────────────────────────────────────────
 if (( ${+commands[eza]} )); then
@@ -37,6 +36,8 @@ fi
 if (( ${+commands[bat]} )); then
   alias b='bat --theme=Catppuccin-mocha'
 fi
+alias wall='sh ~/.config/scripts/wallpaper-set'
+alias theme='sh ~/.config/scripts/theme-switch'
 
 # ── prompt (starship) ───────────────────────────────────────
 eval "$(starship init zsh)"

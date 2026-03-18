@@ -145,6 +145,7 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 local servers = {
 	"astro",
 	"bashls",
+	"csharp_ls",
 	"biome",
 	"clangd",
 	"cssls",
@@ -192,6 +193,14 @@ if omni ~= "" then
 		capabilities = capabilities,
 	})
 end
+
+vim.lsp.config("csharp_ls", {
+	handlers = {
+		["textDocument/definition"] = require("csharpls_extended").handler,
+		["textDocument/typeDefinition"] = require("csharpls_extended").handler,
+	},
+	capabilities = capabilities,
+})
 
 vim.lsp.config("biome", {
 	filetypes = {

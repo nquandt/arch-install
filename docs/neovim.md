@@ -8,7 +8,7 @@ Neovim is the editor. This setup uses **lazy.nvim** for plugins and expects **Ne
 
 1. Run `**nvim`**.
 2. **lazy.nvim** bootstraps and installs plugins (can take a few minutes).
-3. Run `**:Mason`** and install language servers you need (e.g. **lua_ls**, **rust_analyzer**; TypeScript often via **typescript-tools.nvim**).
+3. Run `**:Mason`** and install language servers you need (e.g. **lua_ls**, **rust_analyzer**; TypeScript often via **typescript-tools.nvim**). **C#** uses **csharp-ls** installed as a dotnet global tool by **install.sh** — no Mason step needed.
 
 **Markdown preview** needs **Node** + first-time `npm install` inside the plugin — install **nodejs/npm** from pacman if you use it.
 
@@ -20,6 +20,7 @@ Neovim is the editor. This setup uses **lazy.nvim** for plugins and expects **Ne
 | Theme  | Catppuccin Mocha                                                                  |
 | LSP    | nvim-lspconfig + Mason; many servers pre-declared in `lua/plugins/config/lsp.lua` |
 | Rust   | rustaceanvim                                                                      |
+| C#     | csharp_ls (dotnet global tool) + csharpls-extended-lsp.nvim for decompiled go-to-def |
 | TS/JS  | typescript-tools.nvim                                                             |
 | Format | conform.nvim (on save)                                                            |
 | Lint   | nvim-lint                                                                         |

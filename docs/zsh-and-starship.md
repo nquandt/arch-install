@@ -14,8 +14,8 @@
 - Large shared **history** (`~/.histfile`)
 - **Completion** (`compinit`)
 - **`EDITOR=nvim`**
-- **PATH:** `~/.local/bin`, `~/.cargo/bin`, optional `~/.npm-global/bin`
-- **Aliases** for **eza** / **bat** when installed
+- **PATH:** `~/.local/bin`, `~/.cargo/bin`, `~/.npm-global/bin`, `~/.dotnet/tools`
+- **Aliases** for **eza** / **bat** when installed, plus **`wall`** (wallpaper-set) and **`theme`** (theme-switch)
 - **Starship** prompt last (so it picks up env)
 
 ### Customizing

@@ -18,4 +18,5 @@ require("nvim-treesitter.install").install({
 	"vim",
 	"cpp",
 	"http",
+	"c_sharp",
 })

@@ -71,6 +71,8 @@ Configs can drift; this matches the repo as written. Hyprland extras may live in
 |------|--------|
 | **Super+Shift+L** | Lock screen (swaylock) |
 | **Super+Shift+Z** | Keyboard layout script |
+| **Super+Shift+W** | Random wallpaper (swww) |
+| **Super+Shift+A** | Cycle theme (Catppuccin mocha→macchiato→frappe→latte) |
 
 ### wofi (launcher)
 
@@ -246,6 +248,7 @@ Configs can drift; this matches the repo as written. Hyprland extras may live in
 ```
 Hyprland: Super+Enter terminal  Super+F launcher  Super+B firefox  Super+Shift+M quit
           Super+R–V workspaces 11–18   Super+Alt+1–9 workspaces 1–9
+          Super+Shift+W wallpaper      Super+Shift+A theme cycle
 
 tmux:     Ctrl+Space then I (plugins)  %  "  splits   t sessionizer   F7 copy mode
 

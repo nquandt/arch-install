@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+# Cycle or set Catppuccin theme across ghostty, dunst, hyprland borders, wofi, waybar.
+# Usage: theme-switch [mocha|macchiato|frappe|latte]
+set -euo pipefail
+
+THEMES=(mocha macchiato frappe latte)
+STATE_FILE="$HOME/.config/current-theme"
+
+current=$(cat "$STATE_FILE" 2>/dev/null || echo "mocha")
+
+if [[ $# -ge 1 ]]; then
+  next="$1"
+else
+  idx=0
+  for i in "${!THEMES[@]}"; do
+    [[ "${THEMES[$i]}" == "$current" ]] && idx=$i
+  done
+  next="${THEMES[$(( (idx + 1) % ${#THEMES[@]} ))]}"
+fi
+
+valid=0
+for t in "${THEMES[@]}"; do
+  if [[ "$t" == "$next" ]]; then valid=1; fi
+done
+if [[ $valid -eq 0 ]]; then
+  echo "Unknown theme: $next (valid: ${THEMES[*]})" >&2; exit 1
+fi
+
+# ── Palettes ──────────────────────────────────────────────────────────────────
+palette() {
+  local name="$1"
+  case "$name" in
+    mocha)
+      echo 'base="#1e1e2e"'
+      echo 'mantle="#181825"'
+      echo 'crust_rgb="17, 17, 27"'
+      echo 'surface0="#313244"'
+      echo 'surface1="#45475a"'
+      echo 'surface2="#585b70"'
+      echo 'text="#cdd6f4"'
+      echo 'green="#a6e3a1"'
+      echo 'red="#f38ba8"'
+      echo 'hypr_active="0xffa6e3a1"'
+      echo 'hypr_inactive="0xff585b70"'
+      echo 'ghostty_theme="catppuccin-mocha"'
+      ;;
+    macchiato)
+      echo 'base="#24273a"'
+      echo 'mantle="#1e2030"'
+      echo 'crust_rgb="24, 25, 38"'
+      echo 'surface0="#363a4f"'
+      echo 'surface1="#494d64"'
+      echo 'surface2="#5b6078"'
+      echo 'text="#cad3f5"'
+      echo 'green="#a6da95"'
+      echo 'red="#ed8796"'
+      echo 'hypr_active="0xffa6da95"'
+      echo 'hypr_inactive="0xff5b6078"'
+      echo 'ghostty_theme="catppuccin-macchiato"'
+      ;;
+    frappe)
+      echo 'base="#303446"'
+      echo 'mantle="#292c3c"'
+      echo 'crust_rgb="35, 38, 52"'
+      echo 'surface0="#414559"'
+      echo 'surface1="#51576d"'
+      echo 'surface2="#626880"'
+      echo 'text="#c6d0f5"'
+      echo 'green="#a6d189"'
+      echo 'red="#e78284"'
+      echo 'hypr_active="0xffa6d189"'
+      echo 'hypr_inactive="0xff626880"'
+      echo 'ghostty_theme="catppuccin-frappe"'
+      ;;
+    latte)
+      echo 'base="#eff1f5"'
+      echo 'mantle="#e6e9ef"'
+      echo 'crust_rgb="220, 224, 232"'
+      echo 'surface0="#ccd0da"'
+      echo 'surface1="#bcc0cc"'
+      echo 'surface2="#acb0be"'
+      echo 'text="#4c4f69"'
+      echo 'green="#40a02b"'
+      echo 'red="#d20f39"'
+      echo 'hypr_active="0xff40a02b"'
+      echo 'hypr_inactive="0xffacb0be"'
+      echo 'ghostty_theme="catppuccin-latte"'
+      ;;
+  esac
+}
+
+# Load old palette
+eval "$(palette "$current")"
+old_base="$base"; old_mantle="$mantle"; old_crust_rgb="$crust_rgb"
+old_surface0="$surface0"; old_surface1="$surface1"; old_surface2="$surface2"
+old_text="$text"; old_green="$green"; old_red="$red"
+old_ghostty_theme="$ghostty_theme"
+
+# Load new palette
+eval "$(palette "$next")"
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+# sed through symlinks by resolving the real path
+real_path() { readlink -f "$1" 2>/dev/null || echo "$1"; }
+
+replace_in() {
+  local file="$1" old="$2" new="$3"
+  local real; real="$(real_path "$file")"
+  [[ -f "$real" ]] && sed -i "s|${old}|${new}|g" "$real"
+}
+
+# Replace structural colors (bg/surface/text) but NOT accent/animation colors
+apply_structural() {
+  local file="$1"
+  replace_in "$file" "$old_base"       "$base"
+  replace_in "$file" "$old_mantle"     "$mantle"
+  replace_in "$file" "$old_surface0"   "$surface0"
+  replace_in "$file" "$old_surface1"   "$surface1"
+  replace_in "$file" "$old_surface2"   "$surface2"
+  replace_in "$file" "$old_text"       "$text"
+  # crust-based rgba in waybar window background
+  replace_in "$file" "$old_crust_rgb"  "$crust_rgb"
+}
+
+# Replace structural + accent colors (for dunst/wofi)
+apply_full() {
+  local file="$1"
+  apply_structural "$file"
+  replace_in "$file" "$old_green"  "$green"
+  replace_in "$file" "$old_red"    "$red"
+}
+
+# ── Ghostty ───────────────────────────────────────────────────────────────────
+ghostty_cfg="$HOME/.config/ghostty/config"
+if [[ -f "$ghostty_cfg" ]]; then
+  real="$(real_path "$ghostty_cfg")"
+  sed -i "s|^theme = .*|theme = $ghostty_theme|" "$real"
+fi
+
+# ── Hyprland borders (live IPC + persist) ─────────────────────────────────────
+hyprctl keyword general:col.active_border   "$hypr_active"   2>/dev/null || true
+hyprctl keyword general:col.inactive_border "$hypr_inactive" 2>/dev/null || true
+hypr_conf="$HOME/.config/hypr/hyprland.conf"
+if [[ -f "$hypr_conf" ]]; then
+  real="$(real_path "$hypr_conf")"
+  sed -i "s|col\.active_border = .*|col.active_border = $hypr_active|"   "$real"
+  sed -i "s|col\.inactive_border = .*|col.inactive_border = $hypr_inactive|" "$real"
+fi
+
+# ── Dunst (structural + accent, then reload) ──────────────────────────────────
+dunst_cfg="$HOME/.config/dunst/dunstrc"
+apply_full "$dunst_cfg"
+pkill -SIGHUP dunst 2>/dev/null || true
+
+# ── Wofi ──────────────────────────────────────────────────────────────────────
+wofi_css="$HOME/.config/wofi/style.css"
+apply_full "$wofi_css"
+
+# ── Waybar (structural only – animations cycle full palette on purpose) ────────
+waybar_css="$HOME/.config/waybar/style.css"
+apply_structural "$waybar_css"
+pkill -SIGUSR2 waybar 2>/dev/null || true
+
+# ── Persist ───────────────────────────────────────────────────────────────────
+echo "$next" > "$STATE_FILE"
+notify-send -t 2000 "Theme" "Catppuccin ${next^}" 2>/dev/null || true

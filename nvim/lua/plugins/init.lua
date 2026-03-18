@@ -415,6 +415,7 @@ require("lazy").setup({
 	{ "ccraciun/vim-dreammaker" },
 
 	{ "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
+	{ "Decodetalkers/csharpls-extended-lsp.nvim", lazy = true },
 
 	{
 		"mason-org/mason.nvim",

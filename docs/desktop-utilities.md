@@ -50,6 +50,24 @@ Launch from **wofi** or bind in Hyprland if you want. Default associations: set 
 - **wl-screenrec** — **Super+Y** screen recording (`hypr/record.sh`).
 - **Claude Code** — see **[claude-code.md](claude-code.md)**.
 
+## swww (wallpaper daemon)
+
+Wayland wallpaper daemon. Starts automatically on Hyprland login. See **[wallpaper-and-themes.md](wallpaper-and-themes.md)** for full details.
+
+```bash
+wall              # random wallpaper from ~/Pictures/wallpapers/
+wall /path/to/img # specific image
+```
+
+## Theme switcher
+
+Cycles Catppuccin variants across Ghostty, Hyprland, Dunst, Wofi, Waybar. See **[wallpaper-and-themes.md](wallpaper-and-themes.md)**.
+
+```bash
+theme             # cycle: mocha → macchiato → frappe → latte
+theme latte       # jump to specific theme
+```
+
 ## Scripts (`~/.config/scripts/`)
 
-Symlinked from **`scripts/`**: tmux entrypoints, **lock**, **switch_keyboard_layout**, **tmux-pane-tile**, etc. All executable after **install.sh**.
+Symlinked from **`scripts/`**: tmux entrypoints, **lock**, **switch_keyboard_layout**, **wallpaper-set**, **theme-switch**, **tmux-pane-tile**, etc. All executable after **install.sh**.

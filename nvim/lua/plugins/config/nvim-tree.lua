@@ -1,8 +1,7 @@
 -- setup with all defaults
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
 -- nested options are documented by accessing them with `.` (eg: `:help nvim-tree.view.mappings.list`).
-local HEIGHT_RATIO = 0.3 -- You can change this
-local WIDTH_RATIO = 0.22 -- You can change this too
+local WIDTH_RATIO = 0.22 -- You can change this
 
 local function split(inputstr, sep)
 	if sep == nil then
@@ -71,38 +70,16 @@ require("nvim-tree").setup({ -- BEGIN_DEFAULT_OPTS
 	sync_root_with_cwd = false,
 
 	view = {
-		adaptive_size = true,
+		adaptive_size = false,
 		centralize_selection = false,
-		-- width = 30,
-		-- side = "left",
+		width = function()
+			return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
+		end,
+		side = "left",
 		preserve_window_proportions = true,
 		number = false,
 		relativenumber = false,
 		signcolumn = "yes",
-		float = {
-			enable = true,
-			quit_on_focus_loss = true,
-			open_win_config = function()
-				local screen_w = vim.opt.columns:get()
-				local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
-				local window_w = screen_w * WIDTH_RATIO
-				local window_h = screen_h * HEIGHT_RATIO
-				local window_w_int = math.max(35, math.floor(window_w))
-				local window_h_int = math.max(20, math.floor(window_h))
-
-				return {
-					border = { "", "", " ", " ", " ", " ", "", "" },
-					relative = "cursor",
-					row = 0,
-					col = 0,
-					width = window_w_int,
-					height = window_h_int,
-				}
-			end,
-		},
-		width = function()
-			return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
-		end,
 	},
 
 	renderer = {

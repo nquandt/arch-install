@@ -10,6 +10,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "conform.nvim": { "branch": "master", "commit": "086a40dc7ed8242c03be9f47fbcee68699cc2395" },
   "cord.nvim": { "branch": "master", "commit": "1aadec47743e6cfe77ae6860a5b4305a465f03be" },
+  "csharpls-extended-lsp.nvim": { "branch": "master", "commit": "6eb1308c8f74adbcaa0d681a742f39d4165d063d" },
   "dressing.nvim": { "branch": "master", "commit": "2d7c2db2507fa3c4956142ee607431ddb2828639" },
   "emmet-vim": { "branch": "master", "commit": "cc8b1a9f2241e087330195c76651c5f9d9519e2f" },
   "fidget.nvim": { "branch": "main", "commit": "0ba1e16d07627532b6cae915cc992ecac249fb97" },

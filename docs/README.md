@@ -10,6 +10,7 @@
 | **[ghostty.md](ghostty.md)** | Terminal config, theme, Hyprland bindings |
 | **[zsh-and-starship.md](zsh-and-starship.md)** | Shell, history, PATH, editing `shell/zshrc` |
 | **[system-audio-gui.md](system-audio-gui.md)** | SDDM, PipeWire, polkit, GTK/icons, portals |
+| **[wallpaper-and-themes.md](wallpaper-and-themes.md)** | swww wallpaper daemon, theme switcher (Catppuccin variants), keybinds |
 | **[desktop-utilities.md](desktop-utilities.md)** | Dunst, wob, cliphist, screenshots, lock, Firefox |
 | **[claude-code.md](claude-code.md)** | Optional Anthropic CLI install & auth |
 | **[system-optimization.md](system-optimization.md)** | Low-power / iGPU: sysctl, zram, Hyprland, Waybar |

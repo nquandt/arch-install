@@ -28,6 +28,8 @@ require("conform").setup({
 		json5 = { "fixjson" },
 		jsonc = { "fixjson" },
 
+		cs = { "csharpier" },
+
 		rust = { "rustfmt" },
 		zig = { "zigfmt" },
 

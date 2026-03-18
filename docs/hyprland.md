@@ -48,6 +48,8 @@
 
 - **Super+Shift+L** → **swaylock**
 - **Super+Shift+Z** → keyboard layout script (edit `scripts/switch_keyboard_layout.sh` for your layouts)
+- **Super+Shift+W** → random wallpaper (`scripts/wallpaper-set`, images from `~/Pictures/wallpapers/`)
+- **Super+Shift+A** → cycle Catppuccin theme (`scripts/theme-switch`)
 
 ## “Smart gaps”
 
