@@ -85,6 +85,7 @@ bash install.sh                        # low-power / iGPU (default)
 | **Dunst** | Notifications |
 | **swaylock** | **Super+Shift+L** |
 | **hyprshot** | Screenshots (**Super+U** / **Super+L**) |
+| **imv** | Wayland image viewer (`imv path/to/image.png`) |
 | **cliphist** + **wl-clipboard** | Clipboard history daemon |
 | **mesa** (+ Intel Vulkan/VA-API when available) | Graphics stack |
 
@@ -162,6 +163,7 @@ Edit files **in the repo** and re-run **`install.sh`** (or refresh symlinks) so 
 
 | Doc | Topic |
 |-----|--------|
+| **[docs/KEYBINDS.md](docs/KEYBINDS.md)** | **Every shortcut** (Hyprland, tmux, Neovim, Dunst) |
 | **[docs/README.md](docs/README.md)** | Index of all docs |
 | **[docs/hyprland.md](docs/hyprland.md)** | Compositor, workspaces, all keybindings |
 | **[docs/tmux.md](docs/tmux.md)** | Prefix, TPM, splits, sessionizer |

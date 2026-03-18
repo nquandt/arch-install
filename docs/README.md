@@ -3,6 +3,7 @@
 | Doc | What it covers |
 |-----|----------------|
 | **[hyprland.md](hyprland.md)** | Compositor, workspaces, keybindings, multi-monitor, config file |
+| **[KEYBINDS.md](KEYBINDS.md)** | **All shortcuts** — Hyprland, tmux, Neovim, Dunst (learning cheat sheet) |
 | **[tmux.md](tmux.md)** | Prefix, plugins (TPM/fzf), splits, session scripts, Ghostty integration |
 | **[neovim.md](neovim.md)** | Lazy/Mason, LSP, common keys, first-run, requirements (0.11+) |
 | **[waybar-and-wofi.md](waybar-and-wofi.md)** | Status bar modules, launcher, theming, troubleshooting |

@@ -18,6 +18,17 @@ Volume bar overlay. Hyprland pipes **pamixer** volume into **`/tmp/wobpipe`** on
 
 **Super+U** — region screenshot. **Super+L** — full output. Files land where hyprshot defaults (often `~/Pictures`).
 
+## imv
+
+**Wayland image viewer** (minimal, keyboard-driven). Installed from **extra**.
+
+```bash
+imv ~/Pictures/screenshot.png
+imv ~/Pictures/*.png   # directory / glob
+```
+
+Launch from **wofi** or bind in Hyprland if you want. Default associations: set **`imv`** as default for `image/png` etc. in **`~/.config/mimeapps.list`** or **nwg-look** / portal file picker as needed.
+
 ## swaylock
 
 **Super+Shift+L** — lock screen (Catppuccin-colored solid lock). Requires **swaylock**.

@@ -89,11 +89,11 @@ for p in \
   wl-clipboard cliphist hyprshot \
   xdg-desktop-portal-hyprland xdg-utils \
   qt5-wayland qt6-wayland polkit-kde-agent \
-  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji \
+  ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk \
   gnome-themes-extra gtk4 nwg-look papirus-icon-theme \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   tmux neovim zsh fzf starship ripgrep fd tree-sitter-cli gcc cmake make \
-  swaylock slurp python eza bat mesa firefox thermald; do
+  swaylock slurp python eza bat mesa firefox imv thermald; do
   pacman_install "$p" || warn "skip: $p"
 done
 if [[ $PROFILE_PERFORMANCE -eq 1 ]]; then

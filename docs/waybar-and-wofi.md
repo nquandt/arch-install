@@ -18,6 +18,10 @@
 
 `~/.config/waybar/scripts/` includes **arch_updates** (needs **pacman-contrib**), downloads helpers, etc.
 
+### Workspace strip shows boxes, wrong glyphs, or empty cells
+
+Waybar’s **hyprland/workspaces** module picks icons by workspace **name**, not ID. This repo sets **defaultName** 一…八 on workspaces **11–18** in **`hypr/hyprland.conf`** so names always match. **noto-fonts-cjk** (installed by **`install.sh`**) + **`#workspaces`** font fallback in **`style.css`** render those kanji; JetBrains Mono Nerd alone does not include them.
+
 ### If Waybar fails to start
 
 - Remove **`"cava"`** from **`modules-right`** in **`waybar/config`** if your Waybar build has no cava module.
