@@ -153,7 +153,7 @@ Log out/in once if you skipped the pacstrap `zsh` line so `chsh` can run after `
 
 At **SDDM**, choose **Hyprland**. Then:
 
-1. **tmux** — prefix `Ctrl+s`, then `I` to install TPM plugins.  
+1. **tmux** — prefix **Ctrl+Space**, then **I** to install TPM plugins.  
 2. **nvim** — first launch pulls Lazy/Mason.  
 3. **nwg-look** — optional, for GTK theme tweaks.
 

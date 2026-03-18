@@ -19,7 +19,7 @@ bash install.sh                        # low-power / iGPU (default)
 
 4. **Log out and back in** (or reboot) so **zsh** is your login shell.
 5. At **SDDM**, choose **Hyprland**.
-6. In **tmux**: **Ctrl+s** then **I** (install TPM plugins). In **nvim**: first run downloads Lazy/Mason.
+6. In **tmux**: **Ctrl+Space** then **I** (install TPM plugins). In **nvim**: first run downloads Lazy/Mason.
 
 ---
 
@@ -45,7 +45,7 @@ bash install.sh                        # low-power / iGPU (default)
 | Piece | Role |
 |-------|------|
 | **Ghostty** | Default terminal (AUR) |
-| **tmux** | Multiplexer; prefix **Ctrl+s** |
+| **tmux** | Multiplexer; prefix **Ctrl+Space** |
 | **zsh** | Login shell; config in **`shell/zshrc`** |
 | **starship** | Shell prompt (**`starship.toml`**) |
 | **fzf** | Fuzzy finder (tmux sessions, etc.) |
@@ -113,7 +113,7 @@ bash install.sh                        # low-power / iGPU (default)
 | Topic | Notes |
 |-------|--------|
 | **Profiles** | Default = low-power. **`--performance`** = eye-candy + skip zram/earlyoom. **docs/system-optimization.md**. |
-| **tmux prefix** | **Ctrl+s**, not Ctrl+b. Install plugins once: **Ctrl+s I**. |
+| **tmux prefix** | **Ctrl+Space** then **I** for TPM. If IME uses Ctrl+Space, switch IME hotkey or use `Ctrl+b` in tmux.conf. |
 | **zsh config** | Edit **`shell/zshrc`** in the repo (symlinked). Add secrets via **`~/.zshrc.local`** (see **docs/zsh-and-starship.md**). |
 | **Neovim first run** | Wait for Lazy; run **`:Mason`** for language servers. |
 | **Updates** | Waybar shows pacman pending count; click for `checkupdates` in terminal. |
