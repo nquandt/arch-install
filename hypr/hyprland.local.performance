@@ -18,9 +18,9 @@ decoration {
     }
 }
 
-layerrule = blur, wofi
-layerrule = ignorezero, wofi
-layerrule = blur, waybar
+layerrule = blur on, match:namespace wofi
+layerrule = ignore_alpha 0, match:namespace wofi
+layerrule = blur on, match:namespace waybar
 
 animations {
     enabled = true
