@@ -51,7 +51,7 @@
 
 ## “Smart gaps”
 
-When only one tiled window is on a workspace, gaps/borders can collapse (rules at top of config). Comment those lines if you prefer gaps always on.
+When only one tiled window is on a workspace, gaps/borders can collapse (rules at top of config). Comment those lines if you prefer gaps always on. Rules use Hyprland **0.48+** syntax (`windowrule` + `match:workspace` / `match:class`, not deprecated `windowrulev2`).
 
 ## Multi-monitor
 
