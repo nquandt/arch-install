@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+# Fzf picker → tmux session (from angelofallars/dotfiles, generic paths).
+export FZF_DEFAULT_OPTS="--color=bg+:#313244,spinner:#f5e0dc,hl:#f38ba8 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc"
+
+dirs=()
+for root in "$HOME/repos" "$HOME/projects" "$HOME/code" "$HOME/dev" "$HOME/src"; do
+  [[ -d $root ]] || continue
+  for d in "$root"/*(N-/); do dirs+=("$d"); done
+done
+(( ${#dirs} )) || dirs=("$HOME")
+
+selected=$(printf '%s\n' "${dirs[@]}" | fzf \
+  --prompt="  session  " \
+  --layout=reverse \
+  --preview='command -v eza >/dev/null && eza -T -L 2 --icons {} || ls -la {}' \
+  --preview-window=right,55%) || exit 0
+
+sess=$(basename "$selected" | command tr '.' '_')
+sess=${sess:0:32}
+
+if ! tmux has-session -t "$sess" 2>/dev/null; then
+  tmux_python_venv=""
+  [[ -e "$selected/.venv/bin/activate" ]] && tmux_python_venv="$selected/.venv/bin/activate"
+  tmux new-session -ds "$sess" -c "$selected" -x 300 -y 300 -n nvim \
+    -e TMUX_PYTHON_VENV="$tmux_python_venv" \
+    "$HOME/.config/scripts/tmux-launch-nvim"
+  tmux new-window -t "$sess":2 -d -c "$selected" zsh
+fi
+exec tmux switch-client -t "$sess"

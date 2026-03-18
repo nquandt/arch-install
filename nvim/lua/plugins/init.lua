@@ -1,254 +1,522 @@
 require("lazy").setup({
+	{
+		"neovim/nvim-lspconfig",
+		config = function()
+			require("plugins.config.lsp")
+		end,
+		opts = {
+			inlay_hints = { enabled = true },
+		},
+	},
 
-  -- ── Theme ───────────────────────────────────────────────
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-    config = function()
-      require("catppuccin").setup({
-        flavour = "mocha",
-        integrations = {
-          nvimtree     = true,
-          telescope    = true,
-          treesitter   = true,
-          gitsigns     = true,
-          indent_blankline = { enabled = true },
-          mini         = true,
-        },
-      })
-      vim.cmd.colorscheme("catppuccin")
-    end,
-  },
+	{
+		"MysticalDevil/inlay-hints.nvim",
+		event = "LspAttach",
+		dependencies = { "neovim/nvim-lspconfig" },
+		config = function()
+			require("inlay-hints").setup()
+		end,
+	},
 
-  -- ── tmux/neovim seamless navigation ─────────────────────
-  {
-    "christoomey/vim-tmux-navigator",
-    cmd = {
-      "TmuxNavigateLeft", "TmuxNavigateDown",
-      "TmuxNavigateUp",   "TmuxNavigateRight",
-    },
-    keys = {
-      { "<C-h>", "<cmd>TmuxNavigateLeft<cr>" },
-      { "<C-j>", "<cmd>TmuxNavigateDown<cr>" },
-      { "<C-k>", "<cmd>TmuxNavigateUp<cr>" },
-      { "<C-l>", "<cmd>TmuxNavigateRight<cr>" },
-    },
-  },
+	{
+		"L3MON4D3/LuaSnip",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+		config = function()
+			local ls = require("luasnip")
+			local s = ls.snippet
+			local t = ls.text_node
 
-  -- ── File tree ───────────────────────────────────────────
-  {
-    "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFileToggle" },
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      require("nvim-tree").setup({
-        view = { width = 30 },
-        renderer = { group_empty = true },
-        filters = { dotfiles = false },
-      })
-    end,
-  },
+			ls.add_snippets(
+				"python",
+				s("bp", {
+					t("breakpoint()"),
+				})
+			)
+		end,
+	},
 
-  -- ── Fuzzy finder ────────────────────────────────────────
-  {
-    "nvim-telescope/telescope.nvim",
-    lazy = true,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
-      },
-    },
-    config = function()
-      require("telescope").setup({
-        defaults = {
-          layout_strategy = "horizontal",
-          sorting_strategy = "ascending",
-          layout_config = { prompt_position = "top" },
-        },
-      })
-      require("telescope").load_extension("fzf")
-    end,
-  },
+	{
+		"hrsh7th/nvim-cmp",
+		config = function()
+			require("plugins.config.cmp")
+		end,
 
-  -- ── Statusline ──────────────────────────────────────────
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      require("lualine").setup({
-        options = {
-          theme = "catppuccin",
-          globalstatus = true,
-        },
-      })
-    end,
-  },
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline",
 
-  -- ── Treesitter ──────────────────────────────────────────
-  {
-    "nvim-treesitter/nvim-treesitter",
-    branch = "master",
-    lazy = false,
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "lua", "vim", "vimdoc", "bash", "markdown",
-          "javascript", "typescript", "css", "html",
-          "json", "rust", "go", "python", "c",
-        },
-        sync_install = false,
-        auto_install = true,
-        highlight = { enable = true, additional_vim_regex_highlighting = false },
-        indent    = { enable = true },
-      })
-    end,
-  },
+			"onsails/lspkind-nvim",
+			"hrsh7th/cmp-nvim-lsp-signature-help",
 
-  -- ── Git signs ───────────────────────────────────────────
-  {
-    "lewis6991/gitsigns.nvim",
-    config = function()
-      require("gitsigns").setup({
-        signs = {
-          add          = { text = "▎" },
-          change       = { text = "▎" },
-          delete       = { text = "" },
-          topdelete    = { text = "" },
-          changedelete = { text = "▎" },
-        },
-      })
-    end,
-  },
+			"L3MON4D3/LuaSnip",
+			"saadparwaiz1/cmp_luasnip",
+			"rafamadriz/friendly-snippets",
+		},
+	},
 
-  -- ── Git fugitive ────────────────────────────────────────
-  { "tpope/vim-fugitive" },
+	{
+		"hrsh7th/cmp-cmdline",
+		lazy = true,
+	},
 
-  -- ── Autopairs ───────────────────────────────────────────
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = function()
-      require("nvim-autopairs").setup()
-    end,
-  },
+	{
+		"nvim-treesitter/nvim-treesitter",
+		config = function()
+			require("plugins.config.treesitter")
+		end,
+		build = ":TSUpdate",
+		dependencies = { "HiPhish/rainbow-delimiters.nvim" },
+	},
 
-  -- ── Comments ────────────────────────────────────────────
-  {
-    "numToStr/Comment.nvim",
-    opts = {},
-    lazy = false,
-  },
+	{
+		"vrischmann/tree-sitter-templ",
+		ft = "templ",
+		lazy = true,
+	},
 
-  -- ── Indent guides ───────────────────────────────────────
-  {
-    "nvim-mini/mini.indentscope",
-    version = "*",
-    config = function()
-      require("mini.indentscope").setup({
-        symbol = "▏",
-        draw = {
-          delay = 0,
-          animation = require("mini.indentscope").gen_animation.none(),
-        },
-        options = { try_as_border = true },
-      })
-    end,
-  },
+	{
+		"nvim-telescope/telescope.nvim",
+		config = function()
+			require("plugins.config.telescope")
+		end,
+		dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim" },
+		lazy = true,
+	},
 
-  -- ── LSP ─────────────────────────────────────────────────
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      { "mason-org/mason.nvim",            opts = {} },
-      { "mason-org/mason-lspconfig.nvim",  opts = {} },
-    },
-    config = function()
-      local lsp = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	{
+		"nvim-tree/nvim-web-devicons",
+		lazy = true,
+	},
 
-      -- Add LSP servers here as needed:
-      -- lsp.lua_ls.setup({ capabilities = capabilities })
-      -- lsp.ts_ls.setup({ capabilities = capabilities })
-      -- lsp.rust_analyzer.setup({ capabilities = capabilities })
-    end,
-  },
+	{
+		"nvim-tree/nvim-tree.lua",
+		config = function()
+			require("plugins.config.nvim-tree")
+		end,
+		cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFileToggle" },
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+			lazy = true,
+		},
+		lazy = true,
+	},
 
-  -- ── Autocompletion ──────────────────────────────────────
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
-      "rafamadriz/friendly-snippets",
-      "onsails/lspkind-nvim",
-    },
-    config = function()
-      local cmp    = require("cmp")
-      local luasnip = require("luasnip")
-      local lspkind = require("lspkind")
+	{
+		"nvim-telescope/telescope-fzf-native.nvim",
+		build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		lazy = true,
+	},
 
-      require("luasnip.loaders.from_vscode").lazy_load()
+	{
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("plugins.config.gitsigns")
+		end,
+	},
 
-      cmp.setup({
-        snippet = {
-          expand = function(args) luasnip.lsp_expand(args.body) end,
-        },
-        formatting = {
-          format = lspkind.cmp_format({ mode = "symbol_text", maxwidth = 50 }),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"]   = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"]   = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"]   = cmp.mapping.abort(),
-          ["<CR>"]    = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"]   = cmp.mapping(function(fallback)
-            if cmp.visible() then cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then luasnip.expand_or_jump()
-            else fallback() end
-          end, { "i", "s" }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "buffer" },
-          { name = "path" },
-        }),
-      })
-    end,
-  },
+	{
+		"numToStr/Comment.nvim",
+		opts = {},
+		lazy = false,
+	},
 
-  -- ── Color highlighter ───────────────────────────────────
-  {
-    "catgoose/nvim-colorizer.lua",
-    config = function()
-      require("colorizer").setup()
-    end,
-  },
+	{
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({})
+		end,
+	},
 
-  -- ── Notifications ───────────────────────────────────────
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup({
-        render = "wrapped-compact",
-        minimum_width = 40,
-      })
-      vim.notify = require("notify")
-    end,
-  },
+	{
+		"alvan/vim-closetag",
+		ft = "html",
+		lazy = true,
+	},
 
-  -- ── Better UI inputs ────────────────────────────────────
-  {
-    "stevearc/dressing.nvim",
-    opts = {},
-  },
+	{
+		"mattn/emmet-vim",
+		ft = { "html" },
+		lazy = true,
+	},
 
+	{
+		"vyfor/cord.nvim",
+		build = ":Cord update",
+		enabled = false,
+		config = function()
+			require("plugins.config.cord")
+		end,
+	},
+
+	{
+		"nvim-lualine/lualine.nvim",
+		config = function()
+			require("plugins.config.lualine")
+		end,
+		dependencies = { "nvim-tree/nvim-web-devicons", "catppuccin/nvim" },
+	},
+
+	{
+		"catgoose/nvim-colorizer.lua",
+		config = function()
+			require("colorizer").setup()
+		end,
+	},
+
+	-- TODO: fix config for fidget.nvim
+	{
+		"j-hui/fidget.nvim",
+		tag = "legacy",
+		config = function()
+			require("plugins.config.fidget")
+		end,
+		enabled = true,
+	},
+
+	{
+		"mrcjkb/rustaceanvim",
+		version = "^6", -- Recommended
+		lazy = false, -- This plugin is already lazy
+		ft = "rust",
+		config = function()
+			require("plugins.config.rust-tools")
+		end,
+	},
+
+	{
+		"stevearc/dressing.nvim",
+		config = function()
+			require("plugins.config.dressing")
+		end,
+	},
+
+	{
+		"wuelnerdotexe/vim-astro",
+		ft = "astro",
+		lazy = true,
+	},
+
+	{
+		"samueljoli/hurl.nvim",
+		config = function()
+			require("hurl").setup()
+		end,
+		ft = "hurl",
+		lazy = true,
+	},
+
+	{
+		"utilyre/barbecue.nvim",
+		version = "*",
+		dependencies = {
+			"SmiteshP/nvim-navic",
+			"nvim-tree/nvim-web-devicons", -- optional dependency
+		},
+		config = function()
+			require("plugins.config.barbecue")
+		end,
+	},
+
+	{
+		"catppuccin/nvim",
+		as = "catppuccin",
+		config = function()
+			require("plugins.config.catppuccin")
+		end,
+	},
+
+	{
+		"stevearc/conform.nvim",
+		config = function()
+			require("plugins.config.conform")
+		end,
+		lazy = true,
+		event = "BufWritePre",
+	},
+
+	{
+		"mfussenegger/nvim-lint",
+		config = function()
+			require("plugins.config.nvim-lint")
+		end,
+		lazy = false,
+	},
+
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		build = "cd app && npm install",
+		init = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+			vim.cmd([[
+      let g:mkdp_auto_close = 1
+      let g:mkdp_theme = 'dark'
+      ]])
+		end,
+		ft = { "markdown" },
+		lazy = true,
+	},
+
+	{
+		"nvim-mini/mini.indentscope",
+		version = "*",
+		config = function()
+			local symbol = "▏"
+			require("mini.indentscope").setup({
+				draw = {
+					delay = 0,
+					animation = require("mini.indentscope").gen_animation.none(),
+				},
+				symbol = symbol,
+				options = {
+					try_as_border = true,
+				},
+			})
+		end,
+	},
+
+	-- {
+	-- 	"m4xshen/hardtime.nvim",
+	-- 	dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+	-- 	opts = {
+	-- 		disabled_keys = {
+	-- 			-- My split keyboard with the colemak-dh layout has a layer
+	-- 			-- that maps the arrow keys to the original HJKL positions
+	-- 			["<Up>"] = {},
+	-- 			["<Down>"] = {},
+	-- 			["<Left>"] = {},
+	-- 			["<Right>"] = {},
+	-- 		},
+	-- 		restricted_keys = {
+	-- 			["<Up>"] = { "n", "x" },
+	-- 			["<Down>"] = { "n", "x" },
+	-- 			["<Left>"] = { "n", "x" },
+	-- 			["<Right>"] = { "n", "x" },
+	-- 			["1j"] = { "n", "x" },
+	-- 			["1k"] = { "n", "x" },
+	-- 			["<C-N>"] = {},
+	-- 			["<C-P>"] = {},
+	-- 		},
+	-- 	},
+	-- },
+
+	-- {
+	-- 	"nvim-focus/focus.nvim",
+	-- 	config = function()
+	-- 		require("focus").setup({
+	-- 			ui = {},
+	-- 		})
+	-- 	end,
+	-- },
+
+	{
+		"stevearc/oil.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			local HEIGHT_RATIO = 0.4 -- You can change this
+			local WIDTH_RATIO = 0.20 -- You can change this too
+			local screen_w = vim.opt.columns:get()
+			local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
+			local window_w = screen_w * WIDTH_RATIO
+			local window_h = screen_h * HEIGHT_RATIO
+			local window_w_int = math.max(35, math.floor(window_w))
+			local window_h_int = math.max(20, math.floor(window_h))
+
+			vim.cmd([[
+      autocmd FileType oil setlocal nonumber norelativenumber
+      ]])
+
+			require("oil").setup({
+				float = {
+					padding = 10,
+					border = { " ", " ", " ", " ", " ", " ", " ", " " },
+					max_width = window_w_int,
+					max_height = window_h_int,
+				},
+				keymaps = {
+					["<C-i>"] = "actions.parent",
+					["<C-p>"] = "k",
+					["<C-n>"] = "j",
+					["<C-o>"] = "actions.select_vsplit",
+				},
+			})
+			-- vim.keymap.set("n", "<C-n>", function()
+			-- 	require("oil").toggle_float(".")
+			-- end)
+		end,
+	},
+
+	-- {
+	-- 	"echasnovski/mini.files",
+	-- 	version = false,
+	-- 	config = function()
+	-- 		require("mini.files").setup()
+	-- 	end,
+	-- },
+
+	{
+		"rcarriga/nvim-notify",
+		dependencies = { "catppuccin/nvim" },
+		config = function()
+			require("notify").setup({
+				level = 0,
+				render = "wrapped-compact",
+				minimum_width = 40,
+				fps = 165,
+			})
+
+			vim.cmd([[
+            highlight link NotifyBackground Normal
+            highlight link NotifyERRORBody Normal
+            highlight link NotifyWARNBody Normal
+            highlight link NotifyINFOBody Normal
+            highlight link NotifyDEBUGBody Normal
+            highlight link NotifyTRACEBody Normal
+         ]])
+
+			vim.notify = require("notify")
+		end,
+	},
+
+	-- {
+	-- 	"chrisgrieser/nvim-early-retirement",
+	-- 	config = true,
+	-- 	event = "VeryLazy",
+	-- 	opts = {
+	-- 		-- Show notification on closing. Works with nvim-notify or noice.nvim
+	-- 		notificationOnAutoClose = true,
+	--
+	-- 		-- when a file is deleted, for example via an external program, delete the
+	-- 		-- associated buffer as well
+	-- 		deleteBufferWhenFileDeleted = false,
+	-- 	},
+	-- },
+	--
+
+	{
+		"windwp/nvim-ts-autotag",
+		config = function()
+			require("nvim-ts-autotag").setup()
+		end,
+	},
+
+	{ "rescript-lang/vim-rescript", tag = "v2.1.0" },
+
+	{ "projectfluent/fluent.vim" },
+
+	{ "ccraciun/vim-dreammaker" },
+
+	{ "Hoffs/omnisharp-extended-lsp.nvim", lazy = true },
+
+	{
+		"mason-org/mason.nvim",
+		opts = {},
+	},
+
+	{
+		"mason-org/mason-lspconfig.nvim",
+		opts = {},
+		dependencies = {
+			{ "mason-org/mason.nvim", opts = {} },
+			"neovim/nvim-lspconfig",
+		},
+	},
+
+	{
+		"pmizio/typescript-tools.nvim",
+		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+		config = function()
+			require("typescript-tools").setup({
+				expose_as_code_action = "all",
+				settings = {
+					tsserver_file_preferences = {
+						-- includeInlayParameterNameHints = "all",
+						-- includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+						-- includeInlayFunctionParameterTypeHints = true,
+						-- includeInlayVariableTypeHints = true,
+						-- includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+						-- includeInlayPropertyDeclarationTypeHints = true,
+						-- includeInlayFunctionLikeReturnTypeHints = true,
+						-- includeInlayEnumMemberValueHints = true,
+					},
+				},
+				complete_function_calls = false,
+				tsserver_max_memory = "16384",
+			})
+		end,
+	},
+
+	{
+		"f-person/git-blame.nvim",
+		-- load the plugin at startup
+		event = "VeryLazy",
+		-- Because of the keys part, you will be lazy loading this plugin.
+		-- The plugin will only load once one of the keys is used.
+		-- If you want to load the plugin at startup, add something like event = "VeryLazy",
+		-- or lazy = false. One of both options will work.
+		opts = {
+			-- your configuration comes here
+			-- for example
+			enabled = true, -- if you want to enable the plugin
+			message_template = "<author>, <date> • <summary>", -- template for the blame message, check the Message template section for more options
+			date_format = "%r", -- template for the date, check Date format section for more options
+			virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+			message_when_not_committed = "Not committed",
+			delay = 0,
+		},
+	},
+
+	-- {
+	--    "iabdelkareem/csharp.nvim",
+	--    dependencies = {
+	--       "williamboman/mason.nvim", -- Required, automatically installs omnisharp
+	--       "mfussenegger/nvim-dap",
+	--       "Tastyep/structlog.nvim", -- Optional, but highly recommended for debugging
+	--    },
+	--    config = function ()
+	--       require("mason").setup() -- Mason setup must run before csharp, only if you want to use omnisharp
+	--       require("csharp").setup(
+	--          {
+	--             lsp = {
+	--                -- Sets if you want to use omnisharp as your LSP
+	--                omnisharp = {
+	--                   -- When set to false, csharp.nvim won't launch omnisharp automatically.
+	--                   enable = true,
+	--                   -- The default timeout when communicating with omnisharp
+	--                   default_timeout = 1000,
+	--                   -- Settings that'll be passed to the omnisharp server
+	--                   enable_editor_config_support = true,
+	--                   organize_imports = true,
+	--                   load_projects_on_demand = false,
+	--                   enable_analyzers_support = true,
+	--                   enable_import_completion = true,
+	--                   include_prerelease_sdks = true,
+	--                   analyze_open_documents_only = false,
+	--                   enable_package_auto_restore = true,
+	--                   -- Launches omnisharp in debug mode
+	--                   debug = false,
+	--                },
+	--                -- Sets if you want to use roslyn as your LSP
+	--                roslyn = {
+	--                   -- When set to true, csharp.nvim will launch roslyn automatically.
+	--                   enable = false,
+	--                   -- Path to the roslyn LSP see 'Roslyn LSP Specific Prerequisites' above.
+	--                   cmd_path = "/usr/bin/omnisharp",
+	--                },
+	--                -- The capabilities to pass to the omnisharp server
+	--                capabilities = nil,
+	--                -- on_attach function that'll be called when the LSP is attached to a buffer
+	--                on_attach = nil
+	--             },
+	--          }
+	--       )
+	--    end
+	-- }
 })

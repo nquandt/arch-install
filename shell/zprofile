@@ -1,0 +1,3 @@
+# Login shell — runs before .zshrc
+# Ensure XDG / Wayland apps see a consistent environment
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"

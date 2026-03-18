@@ -1,0 +1,3 @@
+#!/bin/sh
+# Catppuccin-style lock (no wallpaper required). Install: sudo pacman -S swaylock
+exec swaylock -f -c 181825 --ring-color cba6f7 --key-hl-color a6e3a1

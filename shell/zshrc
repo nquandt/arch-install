@@ -1,0 +1,42 @@
+# ~/.zshrc — arch-install dotfiles (symlink from repo shell/zshrc)
+# ── history ─────────────────────────────────────────────────
+HISTFILE=~/.histfile
+HISTSIZE=100000
+SAVEHIST=$HISTSIZE
+setopt hist_ignore_dups hist_ignore_space hist_reduce_blanks
+setopt share_history inc_append_history extended_glob
+setopt autocd prompt_subst no_beep
+
+# ── completion ──────────────────────────────────────────────
+autoload -Uz compinit && compinit -C
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
+
+bindkey -e
+WORDCHARS=''
+
+# ── env ─────────────────────────────────────────────────────
+export EDITOR=nvim
+export VISUAL=nvim
+typeset -U path PATH
+path=(
+  ~/.local/bin
+  ~/.cargo/bin
+  "${path[@]}"
+)
+
+# npm global (Claude Code / others)
+[[ -d ~/.npm-global/bin ]] && path=(~/.npm-global/bin "${path[@]}")
+
+# ── aliases ─────────────────────────────────────────────────
+if (( ${+commands[eza]} )); then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -la --icons --group-directories-first'
+  alias lt='eza --tree --level=2 --icons --git-ignore'
+fi
+if (( ${+commands[bat]} )); then
+  alias b='bat --theme=Catppuccin-mocha'
+fi
+
+# ── prompt (starship) ───────────────────────────────────────
+eval "$(starship init zsh)"

@@ -1,0 +1,18 @@
+[
+  {
+    "layer": "bottom",
+    "height": 43,
+    "spacing": 0,
+    "include": ["~/.config/waybar/default-modules.json"],
+    "reload_style_on_change": true,
+    "modules-left": [
+      "custom/arch",
+      "hyprland/workspaces",
+      "pulseaudio",
+      "custom/pacman",
+      "group/cpu-memory"
+    ],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["cava", "tray", "clock"]
+  }
+]

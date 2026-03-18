@@ -1,44 +1,71 @@
+local utils = require("core.utils")
+local map = utils.map
+local nmap = utils.nmap
+local imap = utils.imap
+local vmap = utils.vmap
+local tmap = utils.tmap
+
 vim.g.mapleader = " "
 
-local map = vim.keymap.set
+-- Search for <files> in the git repository
+nmap("<C-p>", ":lua require'telescope.builtin'.git_files{show_untracked = true}<cr>")
 
--- ── Telescope ─────────────────────────────────────────────
-map("n", "<C-p>",     "<cmd>lua require('telescope.builtin').git_files({ show_untracked = true })<cr>")
-map("n", "<C-f>",     "<cmd>lua require('telescope.builtin').live_grep()<cr>")
-map("n", "<leader>ff","<cmd>lua require('telescope.builtin').find_files()<cr>")
-map("n", "<leader>fg","<cmd>lua require('telescope.builtin').live_grep()<cr>")
-map("n", "<leader>fb","<cmd>lua require('telescope.builtin').buffers()<cr>")
-map("n", "<leader>fh","<cmd>lua require('telescope.builtin').help_tags()<cr>")
+nmap("<C-f>", function()
+	local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+	if vim.v.shell_error ~= 0 then
+		-- fallback: use current dir if not in a git repo
+		git_root = vim.loop.cwd()
+	end
 
--- ── File tree ─────────────────────────────────────────────
-map("n", "<C-n>", ":NvimTreeToggle<CR>")
-map("n", "<leader>e", ":NvimTreeToggle<CR>")
+	require("telescope.builtin").live_grep({
+		cwd = git_root,
+	})
+end, { desc = "Live grep from git root" })
 
--- ── Splits ────────────────────────────────────────────────
-map("n", "<leader>sv", ":vsplit<CR>")
-map("n", "<leader>sh", ":split<CR>")
-map("n", "<C-w>u",     "<C-w>q")
+vim.api.nvim_create_autocmd("BufRead", {
+	pattern = "*/.config/*",
+	command = 'nnoremap <C-p> :lua require"telescope.builtin".git_files{show_untracked = false}<cr>',
+})
 
--- ── Buffers ───────────────────────────────────────────────
-map("n", "<Tab>",   ":bnext<CR>")
-map("n", "<S-Tab>", ":bprev<CR>")
+nmap("<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>")
+nmap("<leader>fg", "<cmd>lua require('telescope.builtin').live_grep(require('telescope.themes').get_ivy({}))<cr>")
+nmap("<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
+nmap("<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 
--- ── Clipboard ─────────────────────────────────────────────
-map("n", "<leader>y", '"+y')
-map("n", "<leader>Y", '"+yg_')
-map("n", "<leader>p", '"+p')
-map("n", "<leader>P", '"+P')
-map("v", "<leader>y", '"+y')
+nmap("<leader>l", "<cmd>!librewolf %<cr>")
 
--- ── Git (fugitive) ────────────────────────────────────────
-map("n", "<leader>J",  "<cmd>Git<cr>")
-map("n", "<leader>ja", "<cmd>Git add %<cr>")
-map("n", "<leader>jm", "<cmd>Git commit<cr>")
-map("n", "<leader>js", "<cmd>Git status<cr>")
-map("n", "<leader>jl", "<cmd>Git log<cr>")
-map("n", "<leader>jd", "<cmd>Git diff %<cr>")
+nmap("<C-c>", ":noh<CR>:<Esc>")
 
--- ── Misc ──────────────────────────────────────────────────
-map("n", "<C-c>", ":noh<CR>:<Esc>")
+nmap("<C-w>u", "<C-w>q")
 
--- ── tmux-navigator (Ctrl+H/J/K/L) handled by plugin ──────
+-- System clipboard Mappings
+nmap("<leader>y", '"+y')
+nmap("<leader>Y", '"+yg_')
+nmap("<leader>p", '"+p')
+nmap("<leader>P", '"+P')
+vmap("<leader>y", '"+y')
+
+nmap("<leader>J", "<cmd>Git<cr>")
+nmap("<leader>jj", "<cmd>Git<cr>")
+
+nmap("<leader>ja", "<cmd>Git add %<cr>")
+nmap("<leader>jm", "<cmd>Git commit<cr>")
+nmap("<leader>js", "<cmd>Git status<cr>")
+nmap("<leader>jl", "<cmd>Git log<cr>")
+nmap("<leader>jd", "<cmd>Git diff %<cr>")
+
+local function toggle_git_dir()
+	local is_inside_git_repo = vim.fn.system("git rev-parse --is-inside-work-tree") == "true\n"
+
+	local path
+	if is_inside_git_repo then
+		local git_root_dir = vim.fn.system("git rev-parse --show-toplevel")
+		path = git_root_dir
+	else
+		path = "."
+	end
+
+	require("nvim-tree.api").tree.toggle()
+end
+
+vim.keymap.set("n", "<C-n>", toggle_git_dir)

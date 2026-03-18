@@ -1,0 +1,16 @@
+theme = catppuccin-mocha
+font-family = JetBrains Mono Regular
+font-family-bold = JetBrains Mono Bold
+font-family-italic = JetBrains Mono Italic
+font-family-bold-italic = JetBrains Mono Bold Italic
+font-family = Twemoji
+font-size = 15.6
+window-padding-x = 9
+window-padding-y = 9
+# --performance profile (translucent terminal)
+background-opacity = 0.88
+gtk-single-instance = true
+confirm-close-surface = false
+
+keybind = ctrl+enter=unbind
+keybind = ctrl+shift+enter=unbind

@@ -1,0 +1,15 @@
+{
+  "config": {
+    "default": true,
+    "MD010": {
+      "ignore_code_languages": [
+        "go"
+      ]
+    },
+    "MD033": {
+      "allowed_elements": [
+        "img"
+      ]
+    }
+  }
+}

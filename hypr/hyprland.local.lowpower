@@ -1,0 +1,2 @@
+# Low-power profile (sourced after main hyprland.conf). See --performance flag.
+env = XCURSOR_SIZE,24
