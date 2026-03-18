@@ -43,9 +43,10 @@ require("lazy").setup({
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
+    lazy = false,
     config = function()
       require("catppuccin").setup({ flavour = "mocha" })
-      vim.cmd.colorscheme("catppuccin")
+      vim.cmd.colorscheme("catppuccin-mocha")
     end,
   },
 
@@ -92,9 +93,9 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
     opts = {
-      ensure_installed = { "lua", "vim", "bash", "markdown" },
+      ensure_installed = { "lua", "vim", "vimdoc", "bash", "markdown" },
+      auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
     },
